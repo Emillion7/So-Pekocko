@@ -34,12 +34,12 @@ app.post('/api/sauces', (req, res, next) => {
         manufacturer: req.body.manufacturer,
         description: req.body.description,
         mainPepper: req.body.mainPepper,
-        imageUrl: req.body.imageUrl,
+        imageUrl: url + '/images/' + req.file.filename,
         heat: req.body.heat,
-        likes: req.body.likes,
-        dislikes: req.body.dislikes,
-        usersLiked: req.body.usersLiked,
-        usersDisliked: req.body.usersDisliked,
+        likes: 0,
+        dislikes: 0,
+        usersLiked: [],
+        usersDisliked: [],
     });
     sauce.save().then(
         () => {
@@ -56,26 +56,75 @@ app.post('/api/sauces', (req, res, next) => {
     )        
   });
 
-app.use('/api/stuff', (req, res, next) => {
-    const stuff = [
-      {
-        _id: 'oeihfzeoi',
-        title: 'My first thing',
-        description: 'All of the info about my first thing',
-        imageUrl: '',
-        price: 4900,
-        userId: 'qsomihvqios',
-      },
-      {
-        _id: 'oeihfzeomoihi',
-        title: 'My second thing',
-        description: 'All of the info about my second thing',
-        imageUrl: '',
-        price: 2900,
-        userId: 'qsomihvqios',
-      },
-    ];
-    res.status(200).json(stuff);
+app.get('api/sauces/:id', (req, res, next) => {
+    Sauce.findOne({
+        _id: req.params.id
+    }).then(
+        (sauce) => {
+            res.status(200).json(sauce);
+        }
+    ).catch(
+        (error) => {
+            res.status(404).json({
+                error: error
+            });
+        }
+    );
+});
+
+app.put('/api/sauces/:id', (req, res, next) => {
+    const sauce = new Sauce({
+        _id: req.params.id,
+        userId: req.body.userId,
+        name: req.body.name,
+        manufacturer: req.body.manufacturer,
+        description: req.body.description,
+        mainPepper: req.body.mainPepper,
+        heat: req.body.heat
+    });
+    Sauce.updateOne({ _id: req.params.id }, sauce).then(
+        () => {
+            res.status(201).json({
+                message: 'Sauce updated successfully!'
+            });
+        }
+    ).catch(
+        (error) => {
+            res.status(400).json({
+                error: error
+            });
+        }
+    );
+});
+
+app.use('/api/sauces', (req, res, next) => {
+    Sauce.find().then(
+        (sauces) => {
+            res.status(200).json(sauces);
+        }
+    ).catch(
+        (error) => {
+            res.status(400).json({
+                error: error
+            });
+        }
+    );
   });
+
+app.delete('/api/stuff/:id', (req, res, next) => {
+    Sauce.deleteOne({ _id: req.params.id }).then(
+        () => {
+            res.status(200).json({
+                message: 'Deleted!'
+            });
+        }
+    ).catch(
+        (error) => {
+            res.status(400).json({
+                error: error
+            });
+        }      
+    );
+});
 
 module.exports = app;
