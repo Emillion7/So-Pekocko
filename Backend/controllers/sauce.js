@@ -1,14 +1,16 @@
 const Sauce = require('../models/sauce');
 
 exports.createSauce = (req, res, next) => {
+    req.body.sauce = JSON.parse(req.body.sauce);
+    const url = req.protocol + '://' + req.get('host');
     const sauce = new Sauce({
-        userId: req.body.userID,
-        name: req.body.name,
-        manufacturer: req.body.manufacturer,
-        description: req.body.description,
-        mainPepper: req.body.mainPepper,
+        userId: req.body.sauce.userID,
+        name: req.body.sauce.name,
+        manufacturer: req.body.sauce.manufacturer,
+        description: req.body.sauce.description,
+        mainPepper: req.body.sauce.mainPepper,
         imageUrl: url + '/images/' + req.file.filename,
-        heat: req.body.heat,
+        heat: req.body.sauce.heat,
         likes: 0,
         dislikes: 0,
         usersLiked: [],
@@ -46,15 +48,32 @@ exports.getOneSauce = (req, res, next) => {
 };
 
 exports.modifySauce = (req, res, next) => {
-    const sauce = new Sauce({
-        _id: req.params.id,
-        userId: req.body.userId,
-        name: req.body.name,
-        manufacturer: req.body.manufacturer,
-        description: req.body.description,
-        mainPepper: req.body.mainPepper,
-        heat: req.body.heat
-    });
+    let sauce = new Sauce({ _id: req.params._id});
+    if (req.file) {
+        req.body.sauce = JSON.parse(req.body.sauce);
+        const url = req.protocol + '://' + req.get('host');
+        sauce = {
+            _id: req.params.id,
+            userId: req.body.sauce.userID,
+            name: req.body.sauce.name,
+            manufacturer: req.body.sauce.manufacturer,
+            description: req.body.sauce.description,
+            mainPepper: req.body.sauce.mainPepper,
+            imageUrl: url + '/images/' + req.file.filename,
+            heat: req.body.sauce.heat,
+        };
+        //might be something more
+    } else {
+        sauce = {
+            _id: req.params.id,
+            userId: req.body.userId,
+            name: req.body.name,
+            manufacturer: req.body.manufacturer,
+            description: req.body.description,
+            mainPepper: req.body.mainPepper,
+            heat: req.body.heat
+        };
+    }    
     Sauce.updateOne({ _id: req.params.id }, sauce).then(
         () => {
             res.status(201).json({
