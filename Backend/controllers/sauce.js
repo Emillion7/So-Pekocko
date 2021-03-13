@@ -5,7 +5,7 @@ exports.createSauce = (req, res, next) => {
     req.body.sauce = JSON.parse(req.body.sauce);
     const url = req.protocol + '://' + req.get('host');
     const sauce = new Sauce({
-        userId: req.body.sauce.userID,
+        userId: req.body.sauce.userId,
         name: req.body.sauce.name,
         manufacturer: req.body.sauce.manufacturer,
         description: req.body.sauce.description,
