@@ -189,9 +189,9 @@ exports.likeSauce = (req, res, next) => {
             console.log('Liked by ' + sauce.usersLiked);
             console.log('Disliked by ' + sauce.usersDisliked);
             console.log('-----------------------------------');
-            Sauce.updateOne({ _id: req.params.id }, sauce).then(        //method used to update the record
+            Sauce.updateOne({ _id: req.params.id }, sauce).then(
                 () => {
-                    res.status(201).json({          //on success give a a 201 status code
+                    res.status(201).json({
                         message: 'Sauce updated successfully!'
                     });
                 }
