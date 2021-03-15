@@ -123,7 +123,7 @@ exports.likeSauce = (req, res, next) => {
         _id: req.params.id
     }).then(
         (sauce) => {
-            console.log('-----------------------------------');
+            
             if (req.body.like === 1) {
                 if (sauce.usersLiked.length === 0) {
                     sauce.usersLiked.push(req.body.userId);
@@ -188,7 +188,7 @@ exports.likeSauce = (req, res, next) => {
             console.log(sauce.likes + ' like ' + 'and ' + sauce.dislikes + ' dislikes.');
             console.log('Liked by ' + sauce.usersLiked);
             console.log('Disliked by ' + sauce.usersDisliked);
-            console.log('-----------------------------------');
+            
             Sauce.updateOne({ _id: req.params.id }, sauce).then(
                 () => {
                     res.status(201).json({
